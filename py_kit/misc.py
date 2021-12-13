@@ -276,3 +276,23 @@ class UpdateList(list):
         for index, item in enumerate(self):
             if callback(item):
                 return index, item
+
+
+def int_content2bytes(content: int):
+    return str(content).encode("utf-8")
+
+
+class EventEmitter:
+
+    def __init__(self):
+        self._event_pool = defaultdict(lambda: [])
+
+    def on(self, key: str, callback):
+        self._event_pool[key].append(callback)
+
+    def off(self, key: str, callback):
+        self._event_pool[key].remove(callback)
+
+    def emit(self, key: str, args: list):
+        for func in self._event_pool[key]:
+            func(*args)
