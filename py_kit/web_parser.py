@@ -1,10 +1,10 @@
+import mimetypes
 import os
 import random
-import mimetypes
 from abc import ABC, abstractmethod
 from typing import NoReturn, Optional, List
 
-__CHAR_POOL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+__CHAR_POOL = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 
 def generate_boundary(size: int = 15) -> str:
@@ -15,7 +15,7 @@ def generate_boundary(size: int = 15) -> str:
     :return: Boundary分割符号
 
     """
-    return "------SystemLightBoundary" + "".join(random.sample(__CHAR_POOL, size))
+    return '------SystemLightBoundary' + ''.join(random.sample(__CHAR_POOL, size))
 
 
 class Item(ABC):
@@ -26,7 +26,7 @@ class Item(ABC):
     """
 
     def __init__(self):
-        self.name = ""
+        self.name = ''
         self.value = b''
 
     @abstractmethod
@@ -43,14 +43,18 @@ class DataItem(Item):
 
     def __init__(self):
         super().__init__()
-        self.filename = ""
-        self.mime = ""
+        self.filename = ''
+        self.mime = ''
 
     def render(self) -> bytes:
-        disposition = 'Content-Disposition: form-data; name="{}"; filename="{}"'.format(self.name, self.filename)
+        disposition = 'Content-Disposition: form-data; name='
+        {}
+        '; filename='
+        {}
+        ''.format(self.name, self.filename)
         file_type = 'Content-Type: {}'.format(self.mime)
-        file_header = "\r\n{}\r\n{}\r\n\r\n".format(disposition, file_type).encode("utf-8")
-        return file_header + self.value + b"\r\n"
+        file_header = '\r\n{}\r\n{}\r\n\r\n'.format(disposition, file_type).encode('utf-8')
+        return file_header + self.value + b'\r\n'
 
 
 class FieldItem(Item):
@@ -64,9 +68,11 @@ class FieldItem(Item):
         super().__init__()
 
     def render(self) -> bytes:
-        disposition = 'Content-Disposition: form-data; name="{}";'.format(self.name)
-        file_header = "\r\n{}\r\n\r\n".format(disposition).encode("utf-8")
-        return file_header + self.value + b"\r\n"
+        disposition = 'Content-Disposition: form-data; name='
+        {}
+        ';'.format(self.name)
+        file_header = '\r\n{}\r\n\r\n'.format(disposition).encode('utf-8')
+        return file_header + self.value + b'\r\n'
 
 
 class FormData:
@@ -78,10 +84,10 @@ class FormData:
 
     def __init__(self, boundary: str = generate_boundary()):
         self.boundary = boundary
-        self.eof = "--{}--\r\n".format(self.boundary).encode("utf-8")
+        self.eof = '--{}--\r\n'.format(self.boundary).encode('utf-8')
         self.items = []  # type: List[Item]
 
-        self.__content_type = "multipart/form-data; boundary={}".format(boundary)
+        self.__content_type = 'multipart/form-data; boundary={}'.format(boundary)
 
     def add_file(self, name: str, path: str, mime: str = None) -> NoReturn:
         """
@@ -94,7 +100,7 @@ class FormData:
         :return: NoReturn
 
         """
-        with open(path, "rb") as fp:
+        with open(path, 'rb') as fp:
             data = fp.read()
         filename = os.path.basename(path)
         self.add_data(name, filename, data, mime)
@@ -130,7 +136,7 @@ class FormData:
         """
         di = FieldItem()
         di.name = name
-        di.value = value.encode("utf-8")
+        di.value = value.encode('utf-8')
         self.items.append(di)
 
     def get_body(self) -> bytes:
@@ -142,7 +148,7 @@ class FormData:
 
         """
         body = b''
-        boundary = b'--' + self.boundary.encode("utf-8")
+        boundary = b'--' + self.boundary.encode('utf-8')
         for item in self.items:
             body += boundary + item.render()
         return body + self.eof

@@ -1,6 +1,7 @@
-import json
 import copy
+import json
 import threading
+from collections import defaultdict
 from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple
 
 
@@ -20,7 +21,7 @@ def find_key(obj: Union[Dict, List], key: str):
     根据字符串查找对象值，字符串形式如a.b.0，
     查找对象，如::
 
-        {"a":{"b":["val"]}}
+        {'a':{'b':['val']}}
 
     val值将被查出
 
@@ -29,7 +30,7 @@ def find_key(obj: Union[Dict, List], key: str):
     :return: 查找到的值
 
     """
-    key_list = key.split(".")
+    key_list = key.split('.')
     for k in key_list:
         if isinstance(obj, list):
             val = obj[int(k)]
@@ -49,7 +50,7 @@ def inin(content: str, pool: List[str]) -> Optional[str]:
 
     举例::
 
-        inin("a",["asdf","fsfsdf"]) 将返回 "asdf"
+        inin('a',['asdf','fsfsdf']) 将返回 'asdf'
 
     :param content: 内容
     :param pool: 列表
@@ -69,7 +70,7 @@ def rinin(content: str, pool: List[str]) -> Optional[str]:
 
     举例::
 
-        inin("asdf",["a","fsfsdf"]) 将返回 "a"
+        inin('asdf',['a','fsfsdf']) 将返回 'a'
 
     :param content: 内容
     :param pool: 列表
@@ -82,7 +83,7 @@ def rinin(content: str, pool: List[str]) -> Optional[str]:
     return None
 
 
-IT = TypeVar("IT")
+IT = TypeVar('IT')
 
 
 def find(iterable: Iterable[IT], func: Callable[[IT], bool]) -> Tuple[int, Optional[IT]]:
@@ -123,7 +124,7 @@ def retry(freq: int = 3, retry_hook: Optional[Callable[[int], None]] = None) -> 
                     if now_freq > freq:
                         raise e
                     now_freq += 1
-                    if hasattr(retry_hook, "__call__"):
+                    if hasattr(retry_hook, '__call__'):
                         retry_hook(now_freq)
 
             return result
@@ -167,9 +168,9 @@ class AdvancedJSONEncoder(json.JSONEncoder):
 
     """
     find_dict = {
-        "date": lambda v: v.strftime("%Y-%m-%d"),
-        "datetime": lambda v: v.strftime("%Y-%m-%d %H:%M"),
-        "Decimal": lambda v: v.to_eng_string()
+        'date': lambda v: v.strftime('%Y-%m-%d'),
+        'datetime': lambda v: v.strftime('%Y-%m-%d %H:%M'),
+        'Decimal': lambda v: v.to_eng_string()
     }
 
     def default(self, obj):
@@ -196,9 +197,9 @@ class UpdateList(list):
 
     on_fetch_key作用::
 
-        复杂场景下我们可能需要up[("home2", True)]这样来找到响应的item，这样显示传递key值没有什么问题，key函数可以获取到
+        复杂场景下我们可能需要up[('home2', True)]这样来找到响应的item，这样显示传递key值没有什么问题，key函数可以获取到
         相应的key数据以供我们处理，但是当我们调用update时，update需要判断该内容是更新还是添加，这时我们传入的内容是数据，显然
-        update无法知晓如何获取我们想要的类型key值，如("home2", True)，所以我们要定义on_fetch_key来告知update如何捕获我们
+        update无法知晓如何获取我们想要的类型key值，如('home2', True)，所以我们要定义on_fetch_key来告知update如何捕获我们
         想要的类型的key值，on_fetch_key只有当key属性定义为函数时才有意义。
 
     """
@@ -218,7 +219,7 @@ class UpdateList(list):
     def __getitem__(self, key):
         if isinstance(self.key, str):
             return self.find(lambda val: val[self.key] == key)
-        elif hasattr(self.key, "__call__"):
+        elif hasattr(self.key, '__call__'):
             return self.find(lambda val: self.key(val, key))
         else:
             return super(UpdateList, self).__getitem__(key)
@@ -226,7 +227,7 @@ class UpdateList(list):
     def __setitem__(self, key, value):
         if isinstance(self.key, str):
             key = self.find(lambda val: val[self.key] == key)[0]
-        elif hasattr(self.key, "__call__"):
+        elif hasattr(self.key, '__call__'):
             key = self.find(lambda val: self.key(val, key))[0]
         super(UpdateList, self).__setitem__(key, value)
 
@@ -248,13 +249,13 @@ class UpdateList(list):
             key = p_object.get(self.key) or -1
             if key != -1:
                 key, old_val = self.find(lambda val: val[self.key] == key)
-        elif hasattr(self.key, "__call__"):
+        elif hasattr(self.key, '__call__'):
             try:
                 key, old_val = self.find(lambda val: self.key(val, self.on_fetch_key(p_object)))
             except TypeError:
-                raise TypeError("Function `on_fetch_key` is not defined")
+                raise TypeError('Function `on_fetch_key` is not defined')
         else:
-            raise TypeError("`key` is TypeError")
+            raise TypeError('`key` is TypeError')
 
         if key == -1:
             if self.on_append:
@@ -279,7 +280,7 @@ class UpdateList(list):
 
 
 def int_content2bytes(content: int):
-    return str(content).encode("utf-8")
+    return str(content).encode('utf-8')
 
 
 class EventEmitter:

@@ -130,76 +130,76 @@ class CnfSelectMode:
 
 
 class CnfProgressbarMode:
-    DETERMINATE = "determinate"
-    INDETERMINATE = "indeterminate"
+    DETERMINATE = 'determinate'
+    INDETERMINATE = 'indeterminate'
 
 
 class MouseEvent:
-    ANY = "<Any-Button>"  # 任何鼠标按钮
+    ANY = '<Any-Button>'  # 任何鼠标按钮
 
-    CLICK_LEFT = "<Button-1>"  # 单击鼠标左键
-    CLICK_MIDDLE = "<Button-2>"  # 单击鼠标中建
-    CLICK_RIGHT = "<Button-3>"  # 单击鼠标右建
+    CLICK_LEFT = '<Button-1>'  # 单击鼠标左键
+    CLICK_MIDDLE = '<Button-2>'  # 单击鼠标中建
+    CLICK_RIGHT = '<Button-3>'  # 单击鼠标右建
 
-    DOUBLE_CLICK_LEFT = "<Double-Button-1>"  # 双击鼠标左键
-    DOUBLE_CLICK_MIDDLE = "<Double-Button-2>"  # 双击鼠标中建
-    DOUBLE_CLICK_RIGHT = "<Double-Button-3>"  # 双击鼠标右建
+    DOUBLE_CLICK_LEFT = '<Double-Button-1>'  # 双击鼠标左键
+    DOUBLE_CLICK_MIDDLE = '<Double-Button-2>'  # 双击鼠标中建
+    DOUBLE_CLICK_RIGHT = '<Double-Button-3>'  # 双击鼠标右建
 
-    MOVE = "<Motion>"  # 鼠标移动
+    MOVE = '<Motion>'  # 鼠标移动
 
-    CLICK_LEFT_MOVE = "<B1-Motion>"  # 按住鼠标左键移动
-    CLICK_MIDDLE_MOVE = "<B2-Motion>"  # 按住鼠标中键移动
-    CLICK_RIGHT_MOVE = "<B2-Motion>"  # 按住鼠标右键移动
+    CLICK_LEFT_MOVE = '<B1-Motion>'  # 按住鼠标左键移动
+    CLICK_MIDDLE_MOVE = '<B2-Motion>'  # 按住鼠标中键移动
+    CLICK_RIGHT_MOVE = '<B2-Motion>'  # 按住鼠标右键移动
 
-    UP_LEFT = "<ButtonRelease-1>"  # 放开鼠标左键
-    UP_MIDDLE = "<ButtonRelease-2>"  # 放开鼠标中建
-    UP_RIGHT = "<ButtonRelease-3>"  # 放开鼠标右建
+    UP_LEFT = '<ButtonRelease-1>'  # 放开鼠标左键
+    UP_MIDDLE = '<ButtonRelease-2>'  # 放开鼠标中建
+    UP_RIGHT = '<ButtonRelease-3>'  # 放开鼠标右建
 
-    ENTER = "<Enter>"  # 鼠标光标进入控件
-    LEAVE = "<Leave>"  # 鼠标光标离开控件
+    ENTER = '<Enter>'  # 鼠标光标进入控件
+    LEAVE = '<Leave>'  # 鼠标光标离开控件
 
-    SCROLL_TOP = "<Button-4>"  # 滑轮向上滚动
-    SCROLL_BOTTOM = "<Button-5>"  # 滑轮向下滚动
+    SCROLL_TOP = '<Button-4>'  # 滑轮向上滚动
+    SCROLL_BOTTOM = '<Button-5>'  # 滑轮向下滚动
 
-    LISTBOX_SELECT = "<<ListboxSelect>>"  # 虚拟绑定多选组件被选中触发
-    COMBOBOX_SELECT = "<<ComboboxSelected>>"
+    LISTBOX_SELECT = '<<ListboxSelect>>'  # 虚拟绑定多选组件被选中触发
+    COMBOBOX_SELECT = '<<ComboboxSelected>>'
 
 
 class KeyEvent:
-    Focus_In = "<FocusIn>"
-    Focus_Out = "<FocusOut>"
+    Focus_In = '<FocusIn>'
+    Focus_Out = '<FocusOut>'
 
-    SHIFT_UP = "<Shift-Up>"
-    ALT_UP = "<Alt-Up>"
-    CTRL_UP = "<Ctrl-Up>"
+    SHIFT_UP = '<Shift-Up>'
+    ALT_UP = '<Alt-Up>'
+    CTRL_UP = '<Ctrl-Up>'
 
-    Return = "<Return>"
-    KEY_DOWN = "<Key>"
+    Return = '<Return>'
+    KEY_DOWN = '<Key>'
 
-    ESC = "<Escape>"
+    ESC = '<Escape>'
 
-    KEY_PRESS_LEFT = "<KeyPress-Left>"
-    KEY_PRESS_RIGHT = "<KeyPress-Right>"
-    KEY_PRESS_UP = "<KeyPress-Up>"
-    KEY_PRESS_DOWN = "<KeyPress-Down>"
+    KEY_PRESS_LEFT = '<KeyPress-Left>'
+    KEY_PRESS_RIGHT = '<KeyPress-Right>'
+    KEY_PRESS_UP = '<KeyPress-Up>'
+    KEY_PRESS_DOWN = '<KeyPress-Down>'
 
 
 class ComponentEvent:
-    CONFIGURE = RESIZE = "<Configure>"
+    CONFIGURE = RESIZE = '<Configure>'
 
 
 class Protocols:
-    CLOSE_WINDOW = "WM_DELETE_WINDOW"
+    CLOSE_WINDOW = 'WM_DELETE_WINDOW'
 
 
 class States:
-    MAX_WINDOW = "zoomed"  # 最大化窗口
-    INVALID = "invalid"
-    DISABLED = "disabled"
-    NON_INVALID = "!invalid"
-    NON_DISABLED = "!disabled"
+    MAX_WINDOW = 'zoomed'  # 最大化窗口
+    INVALID = 'invalid'
+    DISABLED = 'disabled'
+    NON_INVALID = '!invalid'
+    NON_DISABLED = '!disabled'
 
 
 class Attributes:
-    MAX_WINDOW = "-fullscreen"  # 最大化窗口
-    ALPHA = "-alpha"  # 窗口透明度
+    MAX_WINDOW = '-fullscreen'  # 最大化窗口
+    ALPHA = '-alpha'  # 窗口透明度

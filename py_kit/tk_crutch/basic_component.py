@@ -14,7 +14,7 @@ class BasicWindow(tk.Tk):
         if y is None:
             y = (self.winfo_screenheight() // 2) - (h // 2)
 
-        self.geometry(f"{w}x{h}+{x}+{y}")
+        self.geometry(f'{w}x{h}+{x}+{y}')
 
     def fix_win_display(self):
         """
@@ -25,4 +25,4 @@ class BasicWindow(tk.Tk):
 
         """
         ctypes.windll.shcore.SetProcessDpiAwareness(1)  # 告诉操作系统使用程序自身的dpi适配
-        self.tk.call("tk", "scaling", ctypes.windll.shcore.GetScaleFactorForDevice(0) / 75)  # 设置程序缩放
+        self.tk.call('tk', 'scaling', ctypes.windll.shcore.GetScaleFactorForDevice(0) / 75)  # 设置程序缩放

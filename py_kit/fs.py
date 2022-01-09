@@ -1,9 +1,9 @@
-import os
 import json
+import os
 from typing import Dict, Any, NoReturn
 
 
-def require(path: str, encoding: str = "utf-8") -> Dict[str, Any]:
+def require(path: str, encoding: str = 'utf-8') -> Dict[str, Any]:
     """
 
     有时你可能只是需要从文件中读取到json数据，这是require函数将根据
@@ -14,7 +14,7 @@ def require(path: str, encoding: str = "utf-8") -> Dict[str, Any]:
     :return: dict
 
     """
-    fp = open(path, "r", encoding=encoding)
+    fp = open(path, 'r', encoding=encoding)
     data = fp.read()
     fp.close()
     try:
@@ -23,7 +23,7 @@ def require(path: str, encoding: str = "utf-8") -> Dict[str, Any]:
         return {}
 
 
-def read(path: str, encoding: str = "utf-8") -> str:
+def read(path: str, encoding: str = 'utf-8') -> str:
     """
 
     读取文件返回字符串
@@ -33,7 +33,7 @@ def read(path: str, encoding: str = "utf-8") -> str:
     :return: 读取所有字符串
 
     """
-    with open(path, "r", encoding=encoding) as fp:
+    with open(path, 'r', encoding=encoding) as fp:
         result = fp.read()
     return result
 
@@ -47,12 +47,12 @@ def read_bytes(path: str) -> bytes:
     :return: 读取所有字符串
 
     """
-    with open(path, "rb") as fp:
+    with open(path, 'rb') as fp:
         result = fp.read()
     return result
 
 
-def write(path: str, data: str, encoding: str = "utf-8") -> NoReturn:
+def write(path: str, data: str, encoding: str = 'utf-8') -> NoReturn:
     """
 
     将字符串写入文件当中
@@ -63,7 +63,7 @@ def write(path: str, data: str, encoding: str = "utf-8") -> NoReturn:
     :return:
 
     """
-    with open(path, "w", encoding=encoding) as fp:
+    with open(path, 'w', encoding=encoding) as fp:
         fp.write(data)
 
 
@@ -77,7 +77,7 @@ def write_bytes(path: str, data: bytes) -> NoReturn:
     :return:
 
     """
-    with open(path, "wb") as fp:
+    with open(path, 'wb') as fp:
         fp.write(data)
 
 
@@ -96,10 +96,10 @@ def insert2fp(file_path, offset, content, per_size=2048):
     copies = offset // per_size
 
     f_dir, f_name = os.path.split(file_path)
-    temp_path = os.path.join(f_dir, f_name + ".temp")
+    temp_path = os.path.join(f_dir, f_name + '.temp')
 
-    with open(temp_path, "w") as w_fp:
-        with open(file_path, "r") as fp:
+    with open(temp_path, 'w') as w_fp:
+        with open(file_path, 'r') as fp:
             fp.seek(0)
 
             for c in range(1, copies + 1 + int(offset % per_size > 0)):
@@ -131,7 +131,7 @@ def check_join(root_path: str, *args) -> str:
     root_path = os.path.abspath(root_path)
     result_path = os.path.abspath(os.path.join(root_path, *args))
     if not result_path.startswith(root_path):
-        raise ValueError("Illegal path")
+        raise ValueError('Illegal path')
     return result_path
 
 

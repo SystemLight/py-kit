@@ -1,5 +1,5 @@
-from typing import Dict, Any, Callable, List, Union
 from functools import partial
+from typing import Dict, Any, Callable, List, Union
 
 """
 
@@ -7,8 +7,8 @@ python dict对象校验器
 
 """
 
-SOME_TYPE = "some"
-EVERY_TYPE = "every"
+SOME_TYPE = 'some'
+EVERY_TYPE = 'every'
 
 
 class Undefined:
@@ -50,11 +50,11 @@ def some(content: Dict, config: Dict) -> BaseMessage:
     校验字典::
 
         print(some({
-            "name": "lisys",
-            "age": None
+            'name': 'lisys',
+            'age': None
         }, {
-            "name": not_null(msg="自定义传参"),
-            "age": [not_null]
+            'name': not_null(msg='自定义传参'),
+            'age': [not_null]
         }).__dict__)
 
     :param content: 检验dict对象
@@ -81,11 +81,11 @@ def every(content: Dict, config: Dict) -> BaseMessage:
     校验字典::
 
         print(every({
-            "name": "lisys",
-            "age": None
+            'name': 'lisys',
+            'age': None
         }, {
-            "name": not_null,
-            "age": [not_null()]
+            'name': not_null,
+            'age': [not_null()]
         }).__dict__)
 
     :param content: 检验dict对象
@@ -114,15 +114,15 @@ def verify(param: Any, preset: Union[Callable, List], strict: bool = False):
     使用预设即rule的列表进行校验::
 
         # 检验value的值是否符合规则，not_null为非假的规则函数，verify函数返回BaseMessage对象
-        value = "hello SystemLight"
+        value = 'hello SystemLight'
         print(verify(value, [not_null]).__dict__)
-        value = "hello SystemLight"
-        print(verify(value, [not_null(msg="自定义传参")]).__dict__)
+        value = 'hello SystemLight'
+        print(verify(value, [not_null(msg='自定义传参')]).__dict__)
 
     直接传入rule函数::
 
         value = None
-        print(verify(value, not_null(msg="自定义传参")).__dict__)
+        print(verify(value, not_null(msg='自定义传参')).__dict__)
         value = None
         print(verify(value, not_null).__dict__)
 
@@ -132,7 +132,7 @@ def verify(param: Any, preset: Union[Callable, List], strict: bool = False):
     :return: Message
 
     """
-    if hasattr(preset, "__call__"):
+    if hasattr(preset, '__call__'):
         base_m = preset(param, caller=True)
     elif strict:
         base_m = BaseMessage(param)
@@ -167,7 +167,7 @@ def build_check(check_type: str, config: Dict):
     if check_type == EVERY_TYPE:
         return partial(every, config=config)
 
-    raise TypeError("check_type is not support")
+    raise TypeError('check_type is not support')
 
 
 def rule(fn):
@@ -182,7 +182,7 @@ def rule(fn):
 
     def wrap(*args, **kwargs):
         # 判断是被系统调用，还是用户调用
-        if kwargs.get("caller", False):
+        if kwargs.get('caller', False):
             # 系统调用会传入caller，如果被装饰的函数接收caller会造成错误
             return fn(args[0])
         # 用户调用了规则函数，用于自定义传参，同时让返回值仍然是一个可以被系统调用函数
@@ -198,7 +198,7 @@ def __items(param, config, check_type=SOME_TYPE):
     if check_type == EVERY_TYPE:
         return every(param, config)
 
-    raise TypeError("check_type is not support")
+    raise TypeError('check_type is not support')
 
 
 items = rule(__items)
@@ -235,7 +235,7 @@ def e_items(param, config):
 
 
 @rule
-def not_null(param, error_msg="none"):
+def not_null(param, error_msg='none'):
     """
 
     该rule函数是一个最简单的校验规则函数，用于校验值是否为真

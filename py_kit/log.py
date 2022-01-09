@@ -11,9 +11,9 @@ def build_log(log_path: str):
 
     """
     logging.basicConfig(
-        style="%",
-        format="[%(levelname)s %(asctime)s] %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
+        style='%',
+        format='[%(levelname)s %(asctime)s] %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
         level=logging.INFO,
         handlers=[
             logging.handlers.RotatingFileHandler(log_path, maxBytes=1024 * 1024 * 30),

@@ -1,6 +1,6 @@
 import datetime
 
-STANDARD_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+STANDARD_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
 def now():

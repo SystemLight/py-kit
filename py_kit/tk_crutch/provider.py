@@ -16,10 +16,10 @@ class BasicCnfProvider:
         local_content = self.__dict__
         out_put_dic = {}
         for k in local_content:
-            if k == "_kwargs":
+            if k == '_kwargs':
                 continue
             out_put_dic[k] = local_content[k]
-        out_put_dic.update(local_content["_kwargs"])
+        out_put_dic.update(local_content['_kwargs'])
         return out_put_dic
 
 
@@ -96,8 +96,8 @@ class WidgetCnfProvider(BasicCnfProvider):
         # 组件状态
         self.state = NORMAL
 
-    def set_font(self, family: str = "SimHei", size: Union[int, float] = 12, is_bold: bool = FALSE):
-        self.font = (family, size, "bold" if is_bold else "normal")
+    def set_font(self, family: str = 'SimHei', size: Union[int, float] = 12, is_bold: bool = FALSE):
+        self.font = (family, size, 'bold' if is_bold else 'normal')
         return self
 
     def set_img(self, image_path: str):
@@ -136,7 +136,7 @@ class LabelCnfProvider(WidgetCnfProvider):
         self.underline = -1
 
         # Label标签文字内容
-        self.text = ""
+        self.text = ''
 
         # 文本变量
         self.textvariable = None
@@ -286,7 +286,7 @@ class TkcButtonCnfProvider(ButtonCnfProvider):
         ButtonCnfProvider.__init__(self, **kwargs)
 
         self.set_font(size=int(px2pt(14)))
-        self.text = "按 钮"
+        self.text = '按 钮'
         self.fg = ThemeColor.white
         self.bg = ThemeColor.primary
         self.padx = 15
@@ -315,18 +315,18 @@ class SeparatorCnfProvider(TTKWidgetCnfProvider):
 class PackCnfProvider(BasicCnfProvider):
 
     def __init__(
-            self,
-            before=None,
-            after=None,
-            anchor=NW,
-            expand=FALSE,
-            fill=NONE,
-            side=TOP,
-            ipadx=None,
-            ipady=None,
-            padx=(0, 0),
-            pady=(0, 0),
-            **kwargs
+        self,
+        before=None,
+        after=None,
+        anchor=NW,
+        expand=FALSE,
+        fill=NONE,
+        side=TOP,
+        ipadx=None,
+        ipady=None,
+        padx=(0, 0),
+        pady=(0, 0),
+        **kwargs
     ):
         BasicCnfProvider.__init__(self, **kwargs)
 

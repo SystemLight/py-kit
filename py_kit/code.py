@@ -8,7 +8,7 @@ def gbk2utf8(path: str):
 
     """
 
-    with open(path, "r", encoding="gbk") as fp:
+    with open(path, 'r', encoding='gbk') as fp:
         content = fp.read()
-    with open(path, "w", encoding="utf-8") as fp:
+    with open(path, 'w', encoding='utf-8') as fp:
         fp.write(content)

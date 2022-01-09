@@ -35,9 +35,9 @@ def hook_dropfiles(tkwindow_or_winfoid, func=_func, force_unicode=False):
     > tk = tkinter.Tk()
     > hwnd = tk.winfo_id()
     >
-    > # you don't have to write "hwnd = tk.winfo_id()" in tkinter
-    > # because you can put "tk" in this function like:
-    > # "windnd.hook_dropfiles(tk,func = my_func)"
+    > # you don't have to write 'hwnd = tk.winfo_id()' in tkinter
+    > # because you can put 'tk' in this function like:
+    > # 'windnd.hook_dropfiles(tk,func = my_func)'
     > # the reason for this is to expand interface
     >
     > windnd.hook_dropfiles(hwnd,func = my_func)
@@ -56,14 +56,14 @@ def hook_dropfiles(tkwindow_or_winfoid, func=_func, force_unicode=False):
     from ctypes.wintypes import DWORD
 
     hwnd = tkwindow_or_winfoid.winfo_id() \
-        if getattr(tkwindow_or_winfoid, "winfo_id", None) \
+        if getattr(tkwindow_or_winfoid, 'winfo_id', None) \
         else tkwindow_or_winfoid
 
-    if platform.architecture()[0] == "32bit":
+    if platform.architecture()[0] == '32bit':
         GetWindowLong = ctypes.windll.user32.GetWindowLongW
         SetWindowLong = ctypes.windll.user32.SetWindowLongW
         argtype = DWORD
-    elif platform.architecture()[0] == "64bit":
+    elif platform.architecture()[0] == '64bit':
         GetWindowLong = ctypes.windll.user32.GetWindowLongPtrA
         SetWindowLong = ctypes.windll.user32.SetWindowLongPtrA
         argtype = ctypes.c_uint64
@@ -92,9 +92,9 @@ def hook_dropfiles(tkwindow_or_winfoid, func=_func, force_unicode=False):
     limit_num = 200
     for i in range(limit_num):
         if i + 1 == limit_num:
-            raise "over hook limit number 200, for protect computer."
-        if "old_wndproc_%d" % i not in globals():
-            old, new = "old_wndproc_%d" % i, "new_wndproc_%d" % i
+            raise 'over hook limit number 200, for protect computer.'
+        if 'old_wndproc_%d' % i not in globals():
+            old, new = 'old_wndproc_%d' % i, 'new_wndproc_%d' % i
             break
 
     globals()[old] = None
@@ -108,7 +108,7 @@ def hook_dropfiles(tkwindow_or_winfoid, func=_func, force_unicode=False):
 if __name__ == '__main__':
     def myfunc(ls):
         def _local_lnk(link):
-            ''' 处理 link 指向的问题。'''
+            """ 处理 link 指向的问题。"""
             import platform
             if platform.python_version().startswith('3') and type(link) is bytes:
                 try:
@@ -119,7 +119,7 @@ if __name__ == '__main__':
                 _link = link
             try:
                 import sys, win32com.client
-                shell = win32com.client.Dispatch("WScript.Shell")
+                shell = win32com.client.Dispatch('WScript.Shell')
                 shortcut = shell.CreateShortCut(_link)
                 return shortcut.Targetpath if shortcut.Targetpath.strip() else _link
             except:
