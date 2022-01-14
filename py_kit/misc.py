@@ -288,12 +288,23 @@ class EventEmitter:
     def __init__(self):
         self._event_pool = defaultdict(lambda: [])
 
-    def on(self, key: str, callback):
+    def on(self, key: str):
+        def decorator(func: Callable):
+            self.add_event_listener(key, func)
+            return func
+
+        return decorator
+
+    def add_event_listener(self, key: str, callback: Callable):
         self._event_pool[key].append(callback)
 
-    def off(self, key: str, callback):
+    def remove_event_listener(self, key: str, callback: Callable):
         self._event_pool[key].remove(callback)
+        if len(self._event_pool[key]) == 0:
+            del self._event_pool[key]
 
-    def emit(self, key: str, args: list):
+    def emit(self, key: str, args=None):
+        if args is None:
+            args = []
         for func in self._event_pool[key]:
             func(*args)
