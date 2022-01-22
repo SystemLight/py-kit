@@ -196,7 +196,6 @@ class UpdateList(list):
         支持函数，接收val(当前数据)，key(参考key值)该key值由on_fetch_key返回，函数返回bool值True为更新，False为添加
 
     on_fetch_key作用::
-
         复杂场景下我们可能需要up[('home2', True)]这样来找到响应的item，这样显示传递key值没有什么问题，key函数可以获取到
         相应的key数据以供我们处理，但是当我们调用update时，update需要判断该内容是更新还是添加，这时我们传入的内容是数据，显然
         update无法知晓如何获取我们想要的类型key值，如('home2', True)，所以我们要定义on_fetch_key来告知update如何捕获我们
@@ -251,6 +250,7 @@ class UpdateList(list):
                 key, old_val = self.find(lambda val: val[self.key] == key)
         elif hasattr(self.key, '__call__'):
             try:
+                # 为了兼容__getitem__但是不知道key是什么，所以必须提供on_fetch_key
                 key, old_val = self.find(lambda val: self.key(val, self.on_fetch_key(p_object)))
             except TypeError:
                 raise TypeError('Function `on_fetch_key` is not defined')
@@ -265,6 +265,10 @@ class UpdateList(list):
         else:
             super(UpdateList, self).__setitem__(key, self.on_update(old_val, p_object))
 
+    def bulk_update(self, data):
+        for i in data:
+            self.update(i)
+
     def find(self, callback):
         """
 
@@ -277,6 +281,7 @@ class UpdateList(list):
         for index, item in enumerate(self):
             if callback(item):
                 return index, item
+        return -1, None
 
 
 def int_content2bytes(content: int):
