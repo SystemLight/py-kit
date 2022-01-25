@@ -2,75 +2,141 @@ import socket
 from typing import Callable, Union, Optional
 
 
-class BoundaryFinder:
+class IronSockReturnError(Exception):
+    ...
 
-    def __init__(self, boundary=b'\r\n\x00\r\n'):
-        self.boundary = boundary
-        self.recv_size = 1024
-        self.residual = b''
-        self.buffer = []
+
+class IronSocket:
+
+    def __init__(self, sock: socket.SocketType, timeout=None, boundary=b'\r\n\r\n'):
+        """
+
+        IronSocket包含边界读取，满字节读取等扩展功能
+
+        :param sock:
+        :param timeout:
+        :param boundary:
+
+        """
+        self.sock = sock
+        self.sock.settimeout(timeout)
+        self._timeout = timeout
         self.is_connect = True
 
-    def push(self, chunk: bytes):
-        if not chunk:
-            self.stop()
-            return
+        self.boundary = boundary
+        self.default_read_size = 1024
 
-        self.residual += chunk
+        self._buffer = []
+        self._residual = b''
+
+    @property
+    def pending(self):
+        """
+
+        判定是否还存在未处理的边界读取数据
+
+        :return:
+
+        """
+        return len(self._residual) != 0
+
+    def set_timeout(self, timeout):
+        self.sock.settimeout(timeout)
+        self._timeout = timeout
+
+    def get_timeout(self):
+        return self._timeout
+
+    def push(self, chunk: bytes):
+        """
+
+        读取边界数据时用于填入内容的方法
+
+        :param chunk:
+        :return:
+
+        """
+        self._residual += chunk
 
         while True:
-            end_index = self.residual.find(self.boundary)
+            end_index = self._residual.find(self.boundary)
 
             if end_index == -1:
                 break
 
             cut_pos = end_index + len(self.boundary)
-            self.buffer.append(self.residual[0:end_index])
-            self.residual = self.residual[cut_pos:]
+            self._buffer.append(self._residual[0:end_index])
+            self._residual = self._residual[cut_pos:]
 
-    def pop(self, text=True, encoding='utf-8'):
-        if text:
-            data = self.get_text_buffer(encoding)
-        else:
-            data = self.buffer
-        self.buffer = []
-        return data
-
-    def clear(self):
-        self.residual = b''
-        self.buffer = []
-
-    def is_not_residual(self):
-        return len(self.residual) == 0
-
-    def get_text_buffer(self, encoding='utf-8'):
-        return list(map(lambda v: v.decode(encoding), self.buffer))
-
-    def stop(self):
-        self.is_connect = False
-        self.clear()
-
-    def handle(self, conn: socket.SocketType, on_data: Callable[["BoundaryFinder", Union[str, bytes]], Optional[bool]]):
+    def pop(self):
         """
 
-        处理连接
+        读取边界数据时用于弹出内容的方法
 
-        :param conn: socket连接对象
-        :param on_data: 返回True则代表立即退出缓冲中已经解包数据被丢弃，否则将继续得到解包数据即使调用stop，直到获取完毕已经解包的内容才退出
         :return:
 
         """
+        return self._buffer
+
+    def stop(self):
+        self.is_connect = False
+
+    def close(self):
+        self.stop()
+        self.sock.close()
+
+    def reset_rub(self):
+        """
+
+        重置读取边界数据
+
+        :return:
+
+        """
+        self._residual = b''
+        self._buffer = []
+
+    def read_until_boundary(self, on_data: Callable[["IronSocket", Union[str, bytes]], Optional[bool]]):
         while self.is_connect:
-            data_buffer = conn.recv(self.recv_size)
-            if not data_buffer and self.is_not_residual():
-                self.stop()
-                break
+            data_buffer = self.sock.recv(self.default_read_size)
+            if not data_buffer:
+                raise ConnectionAbortedError('connection lost')
 
             self.push(data_buffer)
             for content in self.pop():
-                immediately = on_data(self, content)
-                if immediately:
-                    break
+                on_data(self, content)
+
+    def read(self, buffer_size=None):
+        """
+
+        必定会读取到给定字节的数据
+
+        :param buffer_size:
+        :return:
+
+        """
+        if buffer_size is None:
+            buffer_size = self.default_read_size
+
+        read_data = b''
+        current_buffer_size = buffer_size
+        while True:
+            data = self.sock.recv(current_buffer_size)
+            if not data:
+                raise ConnectionAbortedError('connection lost')
+
+            read_data += data
+            read_size = len(read_data)
+
+            if read_size == buffer_size:
+                break
+
+            current_buffer_size -= read_size
+
+        return read_data
+
+    def write(self, value):
+        self.sock.sendall(value)
 
 
 if __name__ == '__main__':
@@ -92,22 +158,18 @@ if __name__ == '__main__':
     run_app = True
 
 
-    def handle_on_data(self: BoundaryFinder, data: str):
-        if data == 'exitapp':
-            global run_app
-            run_app = False
-            self.stop()
-            return True
-        elif data == 'exit':
-            self.stop()
-            return True
-        print(data)
+    def handle_on_data(isock: IronSocket, content: bytes):
+        isock.close()
+        raise IronSockReturnError(isock, content)
 
 
     while run_app:
         remote_connect, remote_address = server.accept()
-        print(f'connect: {remote_address}')
-        finder = BoundaryFinder()
-        finder.handle(remote_connect, handle_on_data)
+        try:
+            IronSocket(remote_connect).read_until_boundary(handle_on_data)
+        except IronSockReturnError as e:
+            print(e.args[0].pop())
+        except ConnectionAbortedError:
+            run_app = False
 
     server.close()
