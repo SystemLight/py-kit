@@ -215,20 +215,22 @@ class UpdateList(list):
         # 当元素update方法触发的是添加时调用的回调函数，可以自定义append类型
         self.on_append = None
 
-    def __getitem__(self, key):
+    def __getitem__(self, iid):
         if isinstance(self.key, str):
-            return self.find(lambda val: val[self.key] == key)
+            return self.find(lambda val: val[self.key] == iid)
         elif hasattr(self.key, '__call__'):
-            return self.find(lambda val: self.key(val, key))
+            return self.find(lambda val: self.key(val, iid))
         else:
-            return super(UpdateList, self).__getitem__(key)
+            return super(UpdateList, self).__getitem__(iid)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, iid, value):
+        idx = -1
         if isinstance(self.key, str):
-            key = self.find(lambda val: val[self.key] == key)[0]
+            idx = self.find(lambda val: val[self.key] == iid)[0]
         elif hasattr(self.key, '__call__'):
-            key = self.find(lambda val: self.key(val, key))[0]
-        super(UpdateList, self).__setitem__(key, value)
+            idx = self.find(lambda val: self.key(val, iid))[0]
+        if idx != -1:
+            super(UpdateList, self).__setitem__(idx, value)
 
     def update(self, p_object):
         """
@@ -243,27 +245,28 @@ class UpdateList(list):
         if not self.on_update:
             self.on_update = lambda o, p: p
 
+        idx = -1
         old_val = None
         if isinstance(self.key, str):
-            key = p_object.get(self.key) or -1
-            if key != -1:
-                key, old_val = self.find(lambda val: val[self.key] == key)
+            key = p_object.get(self.key, None)  # TODO: 如果提取的iid本身就是None值，则会无限增加
+            if key is not None:
+                idx, old_val = self.find(lambda val: val[self.key] == key)
         elif hasattr(self.key, '__call__'):
             try:
                 # 为了兼容__getitem__但是不知道key是什么，所以必须提供on_fetch_key
-                key, old_val = self.find(lambda val: self.key(val, self.on_fetch_key(p_object)))
+                idx, old_val = self.find(lambda val: self.key(val, self.on_fetch_key(p_object)))
             except TypeError:
                 raise TypeError('Function `on_fetch_key` is not defined')
         else:
             raise TypeError('`key` is TypeError')
 
-        if key == -1:
+        if idx == -1:
             if self.on_append:
                 self.append(self.on_append(p_object))
             else:
                 self.append(p_object)
         else:
-            super(UpdateList, self).__setitem__(key, self.on_update(old_val, p_object))
+            super(UpdateList, self).__setitem__(idx, self.on_update(old_val, p_object))
 
     def bulk_update(self, data):
         for i in data:
@@ -282,10 +285,6 @@ class UpdateList(list):
             if callback(item):
                 return index, item
         return -1, None
-
-
-def int_content2bytes(content: int):
-    return str(content).encode('utf-8')
 
 
 class EventEmitter:
@@ -313,3 +312,5 @@ class EventEmitter:
             args = []
         for func in self._event_pool[key]:
             func(*args)
+
+

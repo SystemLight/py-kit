@@ -148,3 +148,23 @@ def safe_join(*args) -> str:
     for i in range(1, len(args)):
         safe_path = check_join(safe_path, args[i])
     return safe_path
+
+
+def int_content2bytes(content: int):
+    return str(content).encode('utf-8')
+
+
+def gbk2utf8(path: str):
+    """
+
+    gbk编码转utf8编码
+
+    :param path: 文件路径
+    :return:
+
+    """
+
+    with open(path, 'r', encoding='gbk') as fp:
+        content = fp.read()
+    with open(path, 'w', encoding='utf-8') as fp:
+        fp.write(content)
