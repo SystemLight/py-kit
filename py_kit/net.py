@@ -21,7 +21,7 @@ class IronSocket:
         self.sock = sock
         self.sock.settimeout(timeout)
         self._timeout = timeout
-        self.is_connect = True
+        self.is_run = True
 
         self.boundary = boundary
         self.default_read_size = 1024
@@ -65,7 +65,7 @@ class IronSocket:
                 break
 
             cut_pos = end_index + len(self.boundary)
-            self._buffer.append(self._residual[0:end_index])
+            self._buffer.append(self._residual[0:cut_pos])
             self._residual = self._residual[cut_pos:]
 
     def pop(self):
@@ -79,7 +79,7 @@ class IronSocket:
         return self._buffer
 
     def stop(self):
-        self.is_connect = False
+        self.is_run = False
 
     def close(self):
         self.stop()
@@ -97,7 +97,7 @@ class IronSocket:
         self._buffer = []
 
     def read_until_boundary(self, on_data: Callable[["IronSocket", Union[str, bytes]], Optional[bool]]):
-        while self.is_connect:
+        while self.is_run:
             data_buffer = self.sock.recv(self.default_read_size)
             if not data_buffer:
                 raise ConnectionAbortedError('connection lost')
@@ -105,6 +105,29 @@ class IronSocket:
             self.push(data_buffer)
             for content in self.pop():
                 on_data(self, content)
+
+    @staticmethod
+    def _handle_first_data(isock: "IronSocket", data):
+        isock.stop()
+        raise IronSockReturnError(data)
+
+    def read_until_first_boundary(self):
+        try:
+            self.read_until_boundary(IronSocket._handle_first_data)
+        except IronSockReturnError as _:
+            return _.args[0]
+        return None
+
+    def get_unread_data(self, start_pos=1):
+        """
+
+        获取残存在内存中未读取的数据
+
+        :param start_pos:
+        :return:
+
+        """
+        return b''.join(self._buffer[start_pos: len(self._buffer)]) + self._residual
 
     def read(self, buffer_size=None):
         """
