@@ -158,25 +158,3 @@ class UpdateList(list):
             self._index_map[__item[self.key]] = __index
         elif callable(self.key):
             self._index_map[self.on_fetch_key(__item)] = __index
-
-
-if __name__ == '__main__':
-    def _key(_item, fetch_key):
-        return _item['id'] + _item['fkey'] == fetch_key
-
-
-    def _on_fetch_key(_item):
-        return _item['id'] + _item['fkey']
-
-
-    # 定义复杂场景
-    ulist = UpdateList((_key, _on_fetch_key))
-    ulist.append({'id': 3, 'fkey': 3, 'value': 6})
-    ulist.append({'id': 4, 'fkey': 6, 'value': 6})
-    ulist.append({'id': 5, 'fkey': 7, 'value': 6})
-
-    item = {'id': 6, 'fkey': 4, 'value': 20}
-    ulist.update_or_append(item)
-
-    print(ulist[10])
-    print(ulist._index_map)
