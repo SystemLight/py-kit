@@ -9,14 +9,12 @@ setup(
     maintainer='SystemLight',
     maintainer_email='1466335092@qq.com',
     url='https://github.com/SystemLight/py-kit',
+    download_url='https://github.com/SystemLight/py-kit',
     license='MIT',
+    keywords=['kit', 'utils'],
     description='Python Tools Collection',
     long_description=Path('README.md').read_text(encoding='utf-8'),
     long_description_content_type='text/markdown',
-    keywords=['kit', 'utils'],
-    download_url='https://github.com/SystemLight/py-kit',
-    python_requires='>=3.8',
-    platforms=['Windows', 'Linux'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
@@ -24,7 +22,11 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.8',
     ],
-    include_package_data=True,
+    platforms=['Windows', 'Linux'],
+    python_requires='>=3.8',
     install_requires=[],
+    package_data={
+        'py_kit.tkfoam.sun_valley': ['sun-valley.tcl', 'theme/*.tcl', 'theme/dark/*.png', 'theme/light/*.png'],
+    },
     packages=find_packages(exclude=['docs', 'tests*'])
 )
