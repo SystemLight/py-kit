@@ -37,7 +37,7 @@ class EventEmitter:
 
         self._event_pool[key].remove(callback)
         if len(self._event_pool[key]) == 0:
-            del self._event_pool[key]
+            self._event_pool.pop(key)
 
     def emit(self, key: str, args=None):
         if args is None:

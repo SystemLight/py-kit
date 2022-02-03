@@ -4,11 +4,11 @@ import threading
 from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple
 
 
-def omit(obj, fields):
+def omit(obj: dict, fields: List[str]):
     new_obj = copy.copy(obj)
     for key in fields:
         try:
-            del new_obj[key]
+            new_obj.pop(key)
         except KeyError:
             continue
     return new_obj
