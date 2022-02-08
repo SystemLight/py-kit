@@ -1,5 +1,4 @@
-from tkinter import *
-from tkinter import ttk
+from tkinter import Frame, StringVar, Label, LEFT, ttk
 
 
 class SelectFormItem(Frame):

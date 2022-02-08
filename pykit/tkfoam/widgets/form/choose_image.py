@@ -1,7 +1,5 @@
 import imghdr
-from tkinter import *
-from tkinter import messagebox
-from tkinter.filedialog import askopenfilename
+from tkinter import Frame, Label, Entry, StringVar, LEFT, messagebox, filedialog
 
 from ..button import PrimaryButton
 
@@ -22,7 +20,7 @@ class ChooseImage(Frame):
         self.button.pack(side=LEFT, ipady=2)
 
     def choose_file(self):
-        result_path = askopenfilename()
+        result_path = filedialog.askopenfilename()
         try:
             if imghdr.what(result_path):
                 self.entry_var.set(result_path)

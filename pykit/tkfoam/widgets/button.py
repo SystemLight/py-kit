@@ -1,7 +1,7 @@
 from tkinter import Button
 
-from ..theme import ThemeColor, Cursor
-from ..tools import default_font
+from ..constants import ThemeColor, Cursor
+from ..utils import default_font
 
 
 class PrimaryButton(Button):

@@ -36,8 +36,9 @@ class EventEmitter:
             raise ValueError('key must be a string')
 
         self._event_pool[key].remove(callback)
-        if len(self._event_pool[key]) == 0:
-            self._event_pool.pop(key)
+
+    def remove_key(self, key: str):
+        self._event_pool.pop(key)
 
     def emit(self, key: str, args=None):
         if args is None:

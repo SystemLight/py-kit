@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from pathlib import Path
 
 setup(
-    name='py_kit',
+    name='pykit',
     version='1.0.2',
     author='SystemLight',
     author_email='1466335092@qq.com',
@@ -26,7 +26,7 @@ setup(
     python_requires='>=3.8',
     install_requires=[],
     package_data={
-        'py_kit.tkfoam.sun_valley': ['sun-valley.tcl', 'theme/*.tcl', 'theme/dark/*.png', 'theme/light/*.png'],
+        'pykit.tkfoam.sun_valley': ['sun-valley.tcl', 'theme/*.tcl', 'theme/dark/*.png', 'theme/light/*.png'],
     },
     packages=find_packages(exclude=['docs', 'tests*'])
 )

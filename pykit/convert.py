@@ -1,5 +1,14 @@
 from typing import Literal
 
+
+def safe_hex(_hex_text):
+    _hex_text = _hex_text.replace(' ', '')
+    if len(_hex_text) % 2 > 0:
+        return '0' + _hex_text
+    else:
+        return _hex_text
+
+
 class Convert:
 
     def __init__(self, data: str):
@@ -9,15 +18,15 @@ class Convert:
         if self.prefix == '0b':
             self.number = int(self.real_data, 2)
             self.hex = format(self.number, 'X')
-            self.bytes = bytes.fromhex(self.hex)
+            self.bytes = bytes.fromhex(safe_hex(self.hex))
         elif self.prefix == '0x':
             self.number = int(self.real_data, 16)
             self.hex = self.real_data
-            self.bytes = bytes.fromhex(self.real_data)
+            self.bytes = bytes.fromhex(safe_hex(self.real_data))
         elif self.prefix == '0d':
             self.number = int(self.real_data)
             self.hex = format(self.number, 'X')
-            self.bytes = bytes.fromhex(self.hex)
+            self.bytes = bytes.fromhex(safe_hex(self.hex))
         elif self.prefix == '0t':
             self.number = int.from_bytes(self.real_data.encode('utf-8'), 'big', signed=False)
             self.hex = format(self.number, 'X')
