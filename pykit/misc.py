@@ -1,5 +1,6 @@
 import copy
 import json
+import re
 import threading
 from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple
 
@@ -178,3 +179,32 @@ class AdvancedJSONEncoder(json.JSONEncoder):
             return deal_with(obj)
         else:
             return super(AdvancedJSONEncoder, self).default(obj)
+
+
+def prettier_hex(data: Union[int, bytes, str, None], sep=' ', _width=None):
+    if data is None:
+        return ''
+
+    if isinstance(data, int):
+        hex_result = format(data, 'x')
+        if len(hex_result) % 2 > 0:
+            hex_result = '0' + hex_result
+        result = sep.join(re.findall(r'.{2}', hex_result))
+    elif isinstance(data, bytes):
+        result = data.hex(sep)
+    elif isinstance(data, str):
+        return sep.join(re.findall(r'.{2}', data))
+    else:
+        raise ValueError
+
+    if _width:
+        result = result.zfill(_width)
+    return result
+
+
+def pp_hex(data: Union[int, bytes, str], sep=' '):
+    print(prettier_hex(data, sep))
+
+
+def array2str(data: list):
+    return ''.join(map(lambda v: str(v), data))

@@ -34,7 +34,6 @@ class EventEmitter:
     def remove_event_listener(self, key: str, callback: Callable):
         if not isinstance(key, str):
             raise ValueError('key must be a string')
-
         self._event_pool[key].remove(callback)
 
     def remove_key(self, key: str):

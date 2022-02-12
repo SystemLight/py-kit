@@ -21,7 +21,7 @@ class IronSocket:
         self.sock = sock
         self.sock.settimeout(timeout)
         self._timeout = timeout
-        self.is_run = True
+        self.is_read_boundary_run = False
 
         self.boundary = boundary
         self.default_read_size = 1024
@@ -78,11 +78,12 @@ class IronSocket:
         """
         return self._buffer
 
-    def stop(self):
-        self.is_run = False
+    def stop_read_boundary(self):
+        self.is_read_boundary_run = False
 
     def close(self):
-        self.stop()
+        self.stop_read_boundary()
+        self.reset_rub()
         self.sock.close()
 
     def reset_rub(self):
@@ -96,8 +97,9 @@ class IronSocket:
         self._residual = b''
         self._buffer = []
 
-    def read_until_boundary(self, on_data: Callable[["IronSocket", Union[str, bytes]], Optional[bool]]):
-        while self.is_run:
+    def read_boundary_forever(self, on_data: Callable[["IronSocket", Union[str, bytes]], Optional[bool]]):
+        self.is_read_boundary_run = True
+        while self.is_read_boundary_run:
             data_buffer = self.sock.recv(self.default_read_size)
             if not data_buffer:
                 raise ConnectionAbortedError('connection lost')
@@ -108,12 +110,12 @@ class IronSocket:
 
     @staticmethod
     def _handle_first_data(isock: "IronSocket", data):
-        isock.stop()
+        isock.stop_read_boundary()
         raise IronSockReturnError(data)
 
     def read_until_first_boundary(self):
         try:
-            self.read_until_boundary(IronSocket._handle_first_data)
+            self.read_boundary_forever(IronSocket._handle_first_data)
         except IronSockReturnError as _:
             return _.args[0]
         return None
