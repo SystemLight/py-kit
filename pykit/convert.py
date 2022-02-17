@@ -28,8 +28,8 @@ class Convert:
             self.hex = safe_hex(format(self.number, 'x'))
             self.bytes = bytes.fromhex(self.hex)
         elif self.prefix == '0x':
-            self.number = int(self.real_data, 16)
             self.hex = safe_hex(self.real_data)
+            self.number = int(self.hex, 16)
             self.bytes = bytes.fromhex(self.hex)
         elif self.prefix == '0d':
             self.number = int(self.real_data)

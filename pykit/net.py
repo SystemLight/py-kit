@@ -191,7 +191,7 @@ if __name__ == '__main__':
     while run_app:
         remote_connect, remote_address = server.accept()
         try:
-            IronSocket(remote_connect).read_until_boundary(handle_on_data)
+            IronSocket(remote_connect).read_boundary_forever(handle_on_data)
         except IronSockReturnError as e:
             print(e.args[0].pop())
         except ConnectionAbortedError:

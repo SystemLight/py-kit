@@ -1,6 +1,6 @@
 import copy
 import json
-import re
+import textwrap
 import threading
 from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple
 
@@ -189,11 +189,11 @@ def prettier_hex(data: Union[int, bytes, str, None], sep=' ', _width=None):
         hex_result = format(data, 'x')
         if len(hex_result) % 2 > 0:
             hex_result = '0' + hex_result
-        result = sep.join(re.findall(r'.{2}', hex_result))
+        result = sep.join(textwrap.wrap(hex_result, width=2))
     elif isinstance(data, bytes):
         result = data.hex(sep)
     elif isinstance(data, str):
-        return sep.join(re.findall(r'.{2}', data))
+        return sep.join(textwrap.wrap(data, width=2))
     else:
         raise ValueError
 
