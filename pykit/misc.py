@@ -1,7 +1,6 @@
 import copy
 import json
 import textwrap
-import threading
 from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple
 
 
@@ -128,33 +127,6 @@ def retry(freq: int = 3, retry_hook: Optional[Callable[[int], None]] = None) -> 
                         retry_hook(now_freq)
 
             return result
-
-        return wrap
-
-    return decorator
-
-
-def fiber(start: Optional[Callable] = None, end: Optional[Callable] = None):
-    """
-
-    `装饰器`，封装一个函数作为线程执行，允许传入开始和结束的回调函数
-
-    :param start: 开始执行函数的回调
-    :param end: 结束执行函数的回调
-    :return: 函数封装器
-
-    """
-
-    def decorator(func):
-        def wrap(*args):
-            def task():
-                if start:
-                    start(*args)
-                func(*args)
-                if end:
-                    end(*args)
-
-            threading.Thread(target=task).start()
 
         return wrap
 

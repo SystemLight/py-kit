@@ -2,6 +2,33 @@ import time
 from threading import Thread, Lock
 
 
+def fiber(start: Optional[Callable] = None, end: Optional[Callable] = None):
+    """
+
+    `装饰器`，封装一个函数作为线程执行，允许传入开始和结束的回调函数
+
+    :param start: 开始执行函数的回调
+    :param end: 结束执行函数的回调
+    :return: 函数封装器
+
+    """
+
+    def decorator(func):
+        def wrap(*args):
+            def task():
+                if start:
+                    start(*args)
+                func(*args)
+                if end:
+                    end(*args)
+
+            threading.Thread(target=task).start()
+
+        return wrap
+
+    return decorator
+
+
 class StopTask(Exception):
     ...
 
@@ -18,6 +45,10 @@ class TaskThread(Thread):
     def is_stop(self):
         return self._is_stop
 
+    @property
+    def is_run_flag(self):
+        return self._is_run_flag
+
     def run(self) -> None:
         self._is_run_flag = True
         self._is_stop = False
@@ -31,9 +62,9 @@ class TaskThread(Thread):
             del self._target, self._args, self._kwargs
         self._is_stop = True
 
-    def stop(self):
+    def stop(self, block=False):
         self._is_run_flag = False
-        while not self._is_stop:
+        while not self._is_stop and block:
             time.sleep(0.1)
         return self._is_stop
 
@@ -65,8 +96,8 @@ class Task:
     def stop_task(self):
         raise StopTask
 
-    def destroy(self):
+    def destroy(self, block=False):
         with self._mutex:
             if self._task_thread:
-                self._task_thread.stop()
+                self._task_thread.stop(block)
                 self._task_thread = None

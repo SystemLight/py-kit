@@ -67,3 +67,27 @@ def convert_dict(data: dict, rules: List[Tuple[str, Literal['number', 'hex', 'by
         if data.get(i[0]):
             data[i[0]] = Convert(data[i[0]])[i[1]]
     return data
+
+
+def word2byte(length):
+    return length * 2
+
+
+def byte2word(length):
+    return length // 2
+
+
+def bit2word(length):
+    return length // 8 // 2
+
+
+def word2bit(length):
+    return length * 16
+
+
+def bit2byte(length):
+    return length // 8
+
+
+def byte2bit(length):
+    return length * 8
