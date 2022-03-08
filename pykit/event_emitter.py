@@ -1,4 +1,3 @@
-import copy
 import queue
 import time
 from collections import defaultdict
@@ -58,13 +57,14 @@ class EventEmitter:
         if args is None:
             args = []
 
-        for func in copy.copy(self._event_pool[key]):
+        for func in self._event_pool[key][:]:
             func(*args)
 
     def get(self, key: str, timeout=0, sleep=0.5, on_hook: Callable = None) -> tuple:
         """
 
-        提供一种同步阻塞的方式去监听key的返回值，具备自动销毁机制，没有存储功能
+        非线程安全，提供一种同步阻塞的方式去监听key的返回值，具备自动销毁机制，没有存储功能
+        为了保证线程安全，多线程模式需要为emit方法加锁
 
         :param key: 监听key值
         :param timeout: 超时
@@ -80,7 +80,7 @@ class EventEmitter:
         def _callback(*args):
             """
 
-            其它线程调取
+            其它线程调取，多线程同时emit可能会产生错误结果，非线程安全
 
             :param args:
             :return:
