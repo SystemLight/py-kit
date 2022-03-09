@@ -36,7 +36,7 @@ class TaskThread(Thread):
         super().__init__(name=name, target=target, args=args, kwargs=kwargs, daemon=True)
 
         self._is_run_flag = False
-        self._is_stop = False
+        self._is_exit = False
         self.before_run = None
         self.after_run = None
 
@@ -45,19 +45,19 @@ class TaskThread(Thread):
         return self._is_run_flag
 
     @property
-    def is_stop(self):
-        return self._is_stop
+    def is_exit(self):
+        return self._is_exit
 
     def run(self) -> None:
         self._is_run_flag = True
-        self._is_stop = False
+        self._is_exit = False
         self.before_run and self.before_run()
         try:
             if self._target:
                 self._target(*self._args, **self._kwargs)
         finally:
             del self._target, self._args, self._kwargs
-        self._is_stop = True
+        self._is_exit = True
         self.after_run and self.after_run()
 
     def terminate(self):
@@ -69,7 +69,7 @@ class TaskThread(Thread):
 
         """
         self._is_run_flag = False
-        return self._is_stop
+        return self._is_exit
 
     def wait(self):
         """
@@ -79,9 +79,9 @@ class TaskThread(Thread):
         :return:
 
         """
-        while not self._is_stop:
+        while not self._is_exit:
             time.sleep(0.1)
-        return self._is_stop
+        return self._is_exit
 
 
 class SingletonTask:
@@ -123,9 +123,9 @@ class SingletonTask:
         self._on_call_stop_func = on_call_stop_func
 
 
-class ThreadSingletonTask(SingletonTask):
+class SingletonTaskThread(SingletonTask):
 
-    def __init__(self, target_func: Callable[["ThreadSingletonTask", ...], None]):
+    def __init__(self, target_func: Callable[["SingletonTaskThread", ...], None]):
         self._thread: Optional[TaskThread] = None
         super().__init__(self._wrap_boot_func(target_func))
         self._on_call_stop_func = self._on_call_stop
