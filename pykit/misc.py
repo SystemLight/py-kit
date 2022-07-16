@@ -4,6 +4,63 @@ import textwrap
 from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple
 
 
+def scale(number, decimal_str="01"):
+    """
+
+    转换十进制成为任意进制数值，进制字母可自定义
+
+    :param number: 十进制数值
+    :param decimal_str: 默认数值字符是01，也就是说默认是转换成传统二进制数值
+    :return: 进制转换后的数值字符串
+
+    """
+    alphabet = list(decimal_str)
+    decimal = len(alphabet)
+    output = ""
+    while number != 0:
+        number, digit = divmod(number, decimal)
+        output += alphabet[digit]
+    if output is "":
+        output = alphabet[0]
+    return output[::-1]
+
+
+def str2unicode_str(n=5371):
+    """
+    该方法在获取a-z，0-9这种字符时得不到编码值，但是python3中的ord函数实现的便是Unicode编码值返回。
+    print(ord("a"))
+    """
+    return (b"\u" + str(n).encode("unicode_escape")).decode("unicode_escape")
+
+
+def mod(a, b):
+    c = a // b
+    r = a - c * b
+    return r
+
+
+def rem(a, b):
+    c = int(a / b)
+    r = a - c * b
+    return r
+
+
+def xabs(n):
+    """
+    取绝对值
+    """
+    s = n >> 32
+    return (n ^ s) - s
+
+
+def xover(n):
+    """
+    超出归零
+    """
+    s = n - 10 >> 32
+    return n & s
+
+
 def omit(obj: dict, fields: List[str]):
     new_obj = copy.copy(obj)
     for key in fields:
