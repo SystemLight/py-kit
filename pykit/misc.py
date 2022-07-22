@@ -4,6 +4,49 @@ import textwrap
 from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple
 
 
+def extract_jpg_from_pdf(path):
+    pdf = open(path, "rb").read()
+
+    start_mark = b"\xff\xd8"
+    start_fix = 0
+    end_mark = b"\xff\xd9"
+    end_fix = 2
+
+    i = 0
+    n_jpg = 0
+
+    while True:
+        is_stream = pdf.find(b"stream", i)
+        if is_stream < 0:
+            break
+
+        is_start = pdf.find(start_mark, is_stream, is_stream + 20)
+        if is_start < 0:
+            i = is_stream + 20
+            continue
+
+        is_end = pdf.find(b"endstream", is_start)
+        if is_end < 0:
+            raise Exception("Didn't find end of stream !")
+        is_end = pdf.find(end_mark, is_end - 20)
+        if is_end < 0:
+            raise Exception("Didn't find end of JPG!")
+
+        is_start += start_fix
+        is_end += end_fix
+
+        print("JPG %d from %d to %d" % (n_jpg, is_start, is_end))
+        jpg = pdf[is_start:is_end]
+
+        print("提取图片" + "pic_%d.jpg" % n_jpg)
+        jpg_file = open("pic_%d.jpg" % n_jpg, "wb")
+        jpg_file.write(jpg)
+        jpg_file.close()
+
+        n_jpg += 1
+        i = is_end
+
+
 def scale(number, decimal_str="01"):
     """
 
