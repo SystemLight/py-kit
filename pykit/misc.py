@@ -1,7 +1,7 @@
 import copy
 import json
 import textwrap
-from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple
+from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple, Type
 
 
 def extract_jpg_from_pdf(path):
@@ -280,3 +280,81 @@ def pp_hex(data: Union[int, bytes, str], sep=' '):
 
 def array2str(data: list):
     return ''.join(map(lambda v: str(v), data))
+
+
+def at(data_ist, index, default=None):
+    try:
+        return data_ist[index]
+    except IndexError:
+        return default
+
+
+class ProxyWatcher:
+
+    def __init__(self, proxy_master: "Proxy"):
+        self.proxy_master = proxy_master
+        self.container = proxy_master.container
+
+    def watch(self, key, invoke):
+        ...
+
+
+class Proxy:
+
+    def __init__(self, container, *args: Type[ProxyWatcher]):
+        self.container = container
+
+        watchers = list(args)  # type: List
+        for index in range(len(watchers)):
+            watcher = watchers[index]
+            watchers[index] = watcher(self)
+
+        self.watchers = watchers  # type: List[ProxyWatcher]
+        self.watcher_map = {}
+
+    def __getattr__(self, key):
+        invoke = None
+        if hasattr(self.container, key):
+            invoke = getattr(self.container, key)
+        self.watch(key, invoke)
+        return self.proxy(key, invoke)
+
+    def proxy(self, key: str, invoke):
+        proxy_invoke = None
+        for watcher in self.watchers:
+            proxy_handler_method = f'proxy_{key}'
+            proxy_handler_factory_method = f'{proxy_handler_method}_factory'
+
+            if hasattr(watcher, proxy_handler_factory_method):
+                proxy_invoke = getattr(watcher, proxy_handler_factory_method)(invoke)
+            elif hasattr(watcher, proxy_handler_method):
+                proxy_invoke = getattr(watcher, proxy_handler_method)
+
+            if proxy_invoke is not None:
+                break
+
+        return proxy_invoke or invoke
+
+    def set_watcher(self, key, handler):
+        self.watcher_map[key] = handler
+
+    def watch(self, key, invoke):
+        for watcher in self.watchers:
+            watcher.watch(key, invoke)
+
+        watcher_handler = self.watcher_map.get(key)
+        if watcher_handler:
+            watcher_handler(key, invoke)
+
+
+class ProxyClass:
+
+    def __init__(self, container_class, *args: Type[ProxyWatcher]):
+        self.container_class = container_class
+        self.watchers = args
+
+    def __call__(self, *args, **kwargs):
+        return Proxy(
+            self.container_class(*args, **kwargs),
+            *self.watchers
+        )

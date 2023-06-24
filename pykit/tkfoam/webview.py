@@ -27,6 +27,7 @@ if __name__ == '__main__':
 
     rect = [0, 0, 800, 200]
     thread = threading.Thread(target=embed_browser_thread, args=(frame1, rect))
+    thread.setDaemon(True)
     thread.start()
 
     root.mainloop()
