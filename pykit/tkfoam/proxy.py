@@ -33,13 +33,29 @@ class WidgetManagerProxyWatcher(ProxyWatcher):
         widget = widget_config.get('widget')  # type: Union[Callable, dict]
         deploy = widget_config.get('deploy')  # type: Union[Callable, dict]
 
+        register_config = {}
+
         if callable(widget):
             widget_instance = widget(self.container)
         else:
             instance = widget.get('instance')  # type: Union[Callable, str]
+            prop = widget.get('prop', {})
+
             if isinstance(instance, str):
-                instance = WidgetManagerProxyWatcher.widget_instance_map.get(instance)
-            widget_instance = instance(self.proxy_master.container, **widget.get('prop'))
+                instance_config = WidgetManagerProxyWatcher.widget_instance_map.get(instance)
+                instance = instance_config.get('instance')
+
+                common_prop = instance_config.get('prop', {})
+                common_prop.update(prop)
+                prop = common_prop
+
+                register_config = instance_config
+
+            widget_instance = instance(self.proxy_master.container, **prop)
+
+        after_instance = register_config.get('after_instance')
+        if after_instance:
+            after_instance(widget_instance)
 
         if callable(deploy):
             deploy(widget_instance)
@@ -79,7 +95,15 @@ class WidgetManagerProxyWatcher(ProxyWatcher):
 
     @staticmethod
     def registry(widget_name, widget_instance):
+        if not isinstance(widget_instance, dict):
+            widget_instance = {"instance": widget_instance}
         WidgetManagerProxyWatcher.widget_instance_map[widget_name] = widget_instance
+
+    @staticmethod
+    def modify(widget_name, widget_instance):
+        if not isinstance(widget_instance, dict):
+            widget_instance = {"instance": widget_instance}
+        WidgetManagerProxyWatcher.widget_instance_map[widget_name].update(widget_instance)
 
 
 def create_proxy_widget(widget):
@@ -91,11 +115,27 @@ def create_proxy_widget(widget):
 
 class Container:
 
-    def __init__(self, master, descendants):
+    def __init__(self, master, after_instance=None):
+        self.master = master
         self.proxyFrame = create_proxy_widget(tk.Frame)
         Container.registry('ProxyFrame', self.proxyFrame)
-        self.proxyFrame(master).descendants(descendants).pack(fill=tk.BOTH, expand=tk.TRUE)
+
+        if after_instance:
+            Container.modify('ProxyFrame', {
+                "after_instance": after_instance
+            })
+
+    def parse(self, descendants):
+        return self.proxyFrame(self.master).descendants(descendants).pack(fill=tk.BOTH, expand=tk.TRUE)
+
+    @staticmethod
+    def get(id_flag):
+        return WidgetManagerProxyWatcher.get_widget(id_flag)
 
     @staticmethod
     def registry(widget_name, widget_instance):
         WidgetManagerProxyWatcher.registry(widget_name, widget_instance)
+
+    @staticmethod
+    def modify(widget_name, widget_instance):
+        WidgetManagerProxyWatcher.modify(widget_name, widget_instance)
