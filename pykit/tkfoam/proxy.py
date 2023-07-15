@@ -1,3 +1,4 @@
+import json
 import tkinter as tk
 from typing import Union, Callable
 
@@ -127,6 +128,13 @@ class Container:
 
     def parse(self, descendants):
         return self.proxyFrame(self.master).descendants(descendants).pack(fill=tk.BOTH, expand=tk.TRUE)
+
+    def parse_str(self, descendants):
+        return self.parse(json.loads(descendants))
+
+    def parse_file(self, descendants):
+        with open(descendants, 'r') as fp:
+            return self.parse(json.load(fp))
 
     @staticmethod
     def get(id_flag):
