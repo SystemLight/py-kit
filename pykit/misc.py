@@ -358,3 +358,72 @@ class ProxyClass:
             self.container_class(*args, **kwargs),
             *self.watchers
         )
+
+
+class Place:
+
+    def __init__(self, max_num=0):
+        self.max_num = max_num
+        self.after_place = None
+        self.before_place = None
+        self.index = 0
+
+    def after(self, place: "Place"):
+        self.after_place = place
+        place.before(self)
+        return place
+
+    def before(self, place: "Place"):
+        self.before_place = place
+        return place
+
+    def step(self):
+        if self.index >= self.max_num:
+            if self.before_place:
+                self.before_place.step()
+            else:
+                raise IndexError('超出最大存储范围')
+            self.reset()
+            return self
+        self.index += 1
+        return self
+
+    def reset(self):
+        self.index = 0
+        if self.after_place:
+            self.after_place.reset()
+
+
+class PlaceManager:
+
+    def __init__(self, data):
+        self.data = data
+        self.root_place = None
+        self.place_list = []
+
+        for i in range(len(data)):
+            p = Place(len(data[i]))
+            if self.root_place:
+                self.root_place.after(p)
+            self.place_list.append(p)
+            self.root_place = p
+
+    def step(self):
+        if self.root_place:
+            self.root_place.step()
+
+    def get_index(self, is_max=False):
+        result = []
+        place = self.root_place
+        while place:
+            result.append(place.max_num if is_max else place.index)
+            place = place.before_place
+        result.reverse()
+        return result
+
+    def get_max_num(self):
+        result = 1
+        index_list = self.get_index(True)
+        for i in range(len(index_list)):
+            result *= index_list[i]
+        return result
