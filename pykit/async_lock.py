@@ -1,3 +1,7 @@
+import collections
+from asyncio import events, coroutine, futures
+
+
 class Lock:
     """
     协程锁对象
