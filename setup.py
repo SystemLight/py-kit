@@ -23,7 +23,7 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     platforms=['Windows', 'Linux'],
-    python_requires='>=3.8',
+    python_requires='>=3.9',
     install_requires=[],
     package_data={
         'pykit.tkfoam.sun_valley': ['sun-valley.tcl', 'theme/*.tcl', 'theme/dark/*.png', 'theme/light/*.png'],
