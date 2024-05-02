@@ -1,0 +1,203 @@
+[
+  {
+    "widget": {
+      "instance": "ProxyFrame",
+      "prop": {
+        "bg": "blue",
+        "height": 100
+      }
+    },
+    "deploy": {
+      "descendants": [
+        {
+          "widget": {
+            "instance": "ProxyLabelFrame",
+            "prop": {
+              "text": "label1"
+            }
+          },
+          "deploy": {
+            "descendants": [
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              },
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              },
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              }
+            ],
+            "pack": {
+              "fill": "x"
+            }
+          }
+        },
+        {
+          "widget": {
+            "instance": "ProxyLabelFrame",
+            "prop": {
+              "text": "label2"
+            }
+          },
+          "deploy": {
+            "descendants": [
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              },
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              },
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              }
+            ],
+            "pack": {
+              "fill": "x"
+            }
+          }
+        },
+        {
+          "widget": {
+            "instance": "ProxyLabelFrame",
+            "prop": {
+              "text": "label3"
+            }
+          },
+          "deploy": {
+            "descendants": [
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              },
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              },
+              {
+                "widget": {
+                  "instance": "tk.Button",
+                  "prop": {
+                    "text": "hello world"
+                  }
+                },
+                "deploy": {
+                  "pack": {
+                    "side": "left",
+                    "anchor": "n"
+                  }
+                }
+              }
+            ],
+            "pack": {
+              "fill": "x"
+            }
+          }
+        }
+      ],
+      "pack": {
+        "fill": "x"
+      }
+    }
+  },
+  {
+    "widget": {
+      "instance": "ProxyFrame",
+      "prop": {
+        "bg": "yellow",
+        "height": 100
+      }
+    },
+    "deploy": {
+      "pack": {
+        "fill": "x"
+      }
+    }
+  }
+]

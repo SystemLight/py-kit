@@ -1,6 +1,6 @@
 import json
 import tkinter as tk
-from typing import Union, Callable
+from typing import Union, Callable, Type
 
 from pykit.misc import ProxyWatcher, Proxy, ProxyClass
 
@@ -147,3 +147,35 @@ class Container:
     @staticmethod
     def modify(widget_name, widget_instance):
         WidgetManagerProxyWatcher.modify(widget_name, widget_instance)
+
+
+def registry(container: Type[Container]) -> Type[Container]:
+    container.registry('tk.Button', tk.Button)
+    container.registry('ProxyLabelFrame', create_proxy_widget(tk.LabelFrame))
+    return container
+
+
+if __name__ == '__main__':
+    class App(tk.Tk):
+
+        def __init__(self):
+            super().__init__()
+
+            width = 800
+            height = 600
+            screen_width = self.winfo_screenwidth()
+            screen_height = self.winfo_screenheight()
+            x = screen_width // 2 - width // 2
+            y = screen_height // 2 - height // 2
+
+            self.title('tkinter-demo')
+            self.geometry(f'{width}x{height}+{x}+{y}')
+
+            registry(Container)(self).parse_file('./ui.json')
+
+        def handle_button1(self):
+            print('hello')
+
+
+    app = App()
+    app.mainloop()
