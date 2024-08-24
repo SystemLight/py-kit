@@ -70,8 +70,10 @@ def scale(number, decimal_str="01"):
 
 def str2unicode_str(n=5371):
     """
+
     该方法在获取a-z，0-9这种字符时得不到编码值，但是python3中的ord函数实现的便是Unicode编码值返回。
     print(ord("a"))
+
     """
     return (b"\u" + str(n).encode("unicode_escape")).decode("unicode_escape")
 
@@ -90,7 +92,9 @@ def rem(a, b):
 
 def xabs(n):
     """
+
     取绝对值
+
     """
     s = n >> 32
     return (n ^ s) - s
@@ -98,7 +102,9 @@ def xabs(n):
 
 def xover(n):
     """
+
     超出归零
+
     """
     s = n - 10 >> 32
     return n & s
