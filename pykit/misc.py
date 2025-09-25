@@ -4,6 +4,22 @@ import textwrap
 from typing import List, Dict, Union, Optional, Callable, TypeVar, Iterable, Tuple, Type
 
 
+def stirling(n, k):
+    """
+        把n个不同的元素，分成k个”非空且不可区分“的组，有多少种不同分法
+    """
+    if k == 0 or k > n:
+        return 0
+    if k == 1 or k == n:
+        return 1
+    return stirling(n - 1, k - 1) + k * stirling(n - 1, k)
+
+
+def bell_number(n):
+    # 贝尔数
+    return sum(stirling(n, k) for k in range(1, n + 1))
+
+
 def extract_jpg_from_pdf(path):
     pdf = open(path, "rb").read()
 
